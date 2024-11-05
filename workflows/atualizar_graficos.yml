@@ -1,0 +1,34 @@
+name: Atualizar Gráficos
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Atualiza semanalmente aos domingos
+
+jobs:
+  gerar_graficos:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do Repositório
+      uses: actions/checkout@v2
+
+    - name: Configurar Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Instalar Dependências
+      run: |
+        pip install matplotlib
+        pip install requests
+
+    - name: Gerar Gráficos
+      run: python gerar_graficos.py
+
+    - name: Commit e Push das Imagens
+      run: |
+        git config --local user.name "GitHub Actions"
+        git config --local user.email "actions@github.com"
+        git add imagens/grafico_barras.png imagens/grafico_pizza.png
+        git commit -m "Atualizar gráficos de projetos"
+        git push
